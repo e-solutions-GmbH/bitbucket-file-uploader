@@ -1,0 +1,14 @@
+{
+  "name": "de.eso.tools.bfu",
+  "version": "1.0.0",
+  "author": "Ferdinand Schneider <ferdinand.schneider@esolutions.de>",
+  "scripts": {
+    "build": "tsc && cp -r './manifest/.' './build' && cp -r './res/.' './build'"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.81",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.13.1",
+    "typescript": "^3.3.3333"
+  }
+}
