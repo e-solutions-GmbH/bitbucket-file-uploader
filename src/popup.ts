@@ -1,15 +1,12 @@
-let changeColor: HTMLElement = document.getElementById('changeColor');
+const upload: HTMLElement = document.getElementById('upload');
 
-chrome.storage.sync.get('color', function (data) {
-    changeColor.style.backgroundColor = data.color;
-    changeColor.setAttribute('value', data.color);
-});
-
-changeColor.onclick = function (element) {
-    const color = (element.target as HTMLInputElement).value;
-    /* chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        chrome.tabs.executeScript(
-            tabs[0].id,
-            {file: 'content.js'});
-    }); */
+upload.onclick = function (element) {
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.sendMessage(
+            tabs[0].id, {type: 'uploadRequest'}, xhrResp => {
+                console.log('received response message');
+                document.getElementById('response').style.visibility = 'visible';
+                document.getElementById('responseText').innerText = xhrResp;
+            });
+    });
 };
