@@ -1,8 +1,8 @@
 {
-  "name": "Getting Started Example",
+  "name": "Bitbucket File Uploader",
   "version": "1.0",
-  "description": "Build an Extension!",
-  "permissions": ["activeTab", "declarativeContent", "storage", "tabs", "*://*/*"],
+  "description": "Helps you uploading files to a bitbucket repository directly via drag'n'dop",
+  "permissions": ["activeTab", "declarativeContent", "storage", "tabs", "*://*/projects/*/repos/*/browse/*"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
