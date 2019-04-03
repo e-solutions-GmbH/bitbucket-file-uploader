@@ -2,7 +2,12 @@
   "name": "Bitbucket File Uploader",
   "version": "1.0",
   "description": "Helps you uploading files to a bitbucket repository directly via drag'n'dop",
-  "permissions": ["activeTab", "declarativeContent", "storage", "tabs", "*://*/projects/*/repos/*/browse/*"],
+  "permissions": [
+    "declarativeContent",
+    "storage",
+    "*://*/projects/*/repos/*/browse/*",
+    "webNavigation"
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false

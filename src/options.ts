@@ -1,17 +1,12 @@
-let page = document.getElementById('buttonDiv');
-const buttonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1'];
+const update = document.getElementById('update');
+const bitbucketUrl = (<HTMLInputElement>document.getElementById('bitbucketUrl'));
 
-function constructOptions(kButtonColors) {
-    for (const item of kButtonColors) {
-        const button = document.createElement('button');
-        button.style.backgroundColor = item;
-        button.addEventListener('click', function () {
-            chrome.storage.sync.set({color: item}, function () {
-                console.log('color is ' + item);
-            });
-        });
-        page.appendChild(button);
-    }
-}
+chrome.storage.sync.get('bitbucketBaseUrl', items => {
+    bitbucketUrl.value = items.bitbucketBaseUrl;
+})
 
-constructOptions(buttonColors);
+update.onclick = () => {
+    chrome.storage.sync.set({bitbucketBaseUrl: bitbucketUrl.value}, () => {
+        console.log('bitbucket url is now: ' + bitbucketUrl.value);
+    });
+};
