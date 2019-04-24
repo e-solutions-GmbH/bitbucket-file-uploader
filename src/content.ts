@@ -1,3 +1,5 @@
+import * as ejs from 'ejs';
+
 declare var content;
 
 // firefox needs another fetch, see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#XHR_and_Fetch
@@ -12,15 +14,15 @@ chrome.storage.sync.get('bitbucketBaseUrl', items => {
 
 function injectUploadSlideOut() {
     const slideOutBox = <HTMLDivElement>(document.createElement('div'));
-    slideOutBox.id = 'boxchanger';
-    slideOutBox.style.position = 'fixed';
-    slideOutBox.style.top = '200px';
-    slideOutBox.style.right = '0px';
-    slideOutBox.style.width = '30px';
-    slideOutBox.style.height = '25px';
-    slideOutBox.style.backgroundColor = 'black';
-    slideOutBox.addEventListener('click', () => uploadFileToBitbucket());
+
+    const template = `<div id="boxbutton",
+style="position: fixed;top: 200px;right: 0px;width: 30px; height: 25px; background-color: black">
+</div>`;
+
+    const html = ejs.render(template);
+    slideOutBox.innerHTML = html;
     document.body.appendChild(slideOutBox);
+    document.getElementById('boxbutton').addEventListener('click', () => uploadFileToBitbucket());
 }
 
 function createTargetUrl(): Promise<string> {
