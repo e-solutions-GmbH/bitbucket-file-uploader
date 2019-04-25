@@ -1,0 +1,39 @@
+#box {
+    position: fixed;
+    top: 145px;
+    right: -305px;
+    z-index: 9998;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -o-transition-duration: 0.3s;
+}
+
+#boxbutton {
+    float: left;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #ff6600;
+    -webkit-border-radius: 5px 0 0 5px;
+    border-radius: 5px 0 0 5px;
+    width: 30px;
+    height: 28px;
+}
+
+#boxcontent {
+    float: right;
+    background-color: #ff6600;
+    width: 280px;
+    height: 450px;
+    padding: 10px;
+    -webkit-border-radius: 0 0 0 5px;
+    border-radius: 0 0 0 5px;
+    overflow: auto;
+    -webkit-box-shadow: -2px 2px 10px 1px #333333;
+    box-shadow: -2px 2px 10px 1px #333333;
+}
+
+.moveboxchanger {
+    right: 0 !important;
+}

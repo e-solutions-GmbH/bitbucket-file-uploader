@@ -22,6 +22,7 @@ function registerContentScriptInjector() {
                     console.log('\tbitbucketBaseURL undefined');
                 } else if (tab.url && new URL(tab.url).hostname === new URL(items.bitbucketBaseUrl).hostname) {
                     console.log('\tbitbucketBaseURL set, injecting script');
+                    chrome.tabs.insertCSS(tabId, {file: 'box.css'});
                     chrome.tabs.executeScript(tabId, {file: 'content.js'});
                 }
             });
