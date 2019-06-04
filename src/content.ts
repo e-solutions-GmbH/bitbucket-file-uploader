@@ -8,11 +8,16 @@ Dropzone.autoDiscover = false;
 // firefox needs another fetch, see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#XHR_and_Fetch
 const compatFetch = (content && content.fetch) || fetch;
 
-chrome.storage.sync.get('bitbucketBaseUrl', items => {
-    createTargetUrl().then(targetUrl => targetUrl && injectUploadSlideOut(targetUrl));
-});
+(function () {
+    // only injecting upload slide out when url points to a bitbucket directory
+    const locationPathApiUrls = getLocationPathApiUrlsOrNull();
+    if (locationPathApiUrls) {
+        getIsLocationDirectory$(locationPathApiUrls.locationPathUrl)
+            .then(isCurrLocationDirectory => isCurrLocationDirectory && injectUploadSlideOut());
+    }
+}());
 
-function injectUploadSlideOut(apiTarget) {
+function injectUploadSlideOut() {
     const slideOutBox = <HTMLDivElement>(document.createElement('div'));
 
     const template = `
@@ -44,22 +49,22 @@ function injectUploadSlideOut(apiTarget) {
             sourceBranch: 'master'
         },
         processing: function (file) {
-            this.options.url = apiTarget.locationPath + '/' + file.name;
+            this.options.url = getLocationPathApiUrls().locationPathUrl + '/' + file.name;
         },
         sending: function (file, xhr, formData): void {
-            formData.append('branch', createBranchnameFromFileName(file.name));
+            formData.append('branch', createBranchNameFromFileName(file.name));
             formData.append('message', 'added ' + file.name + ' to directory');
         },
         complete: function (file): void {
             this.removeFile(file);
         },
         success(file, response): void {
-            createPullRequest(apiTarget.repositoryPath, createBranchnameFromFileName(file.name), file.name);
+            createPullRequest(getLocationPathApiUrls().repositoryUrl, createBranchNameFromFileName(file.name), file.name);
         }
     });
 }
 
-function createBranchnameFromFileName(filename: string): string {
+function createBranchNameFromFileName(filename: string): string {
     return 'added_file_' + filename.replace(/[^a-z0-9]/gi, '_') + '_with_bitbucket_fileuploader_plugin';
 }
 
@@ -89,30 +94,39 @@ function createPullRequest(respositoryUrl: string, branchName: string, fileName:
         .catch(reason => Error('There was a network error when creating new pull request'));
 }
 
-function createTargetUrl(): Promise<any | null> {
+function getLocationPathApiUrlsOrNull(): any | null {
+    const pathFragmentsMatch = window.location.pathname.match(/(\/projects\/[^/]*\/repos\/[^/]*)(\/browse\/?.*)/);
+    if (!pathFragmentsMatch) {
+        return null;
+    }
+
+    return {
+        bitbucketApiUrl: window.location.origin + '/rest/api/1.0',
+        repositoryFragment: pathFragmentsMatch[1],
+        locationFragment: pathFragmentsMatch[2],
+        repositoryUrl: window.location.origin + '/rest/api/1.0' + pathFragmentsMatch[1],
+        locationPathUrl: window.location.origin + '/rest/api/1.0' + pathFragmentsMatch[1] + pathFragmentsMatch[2]
+    };
+}
+
+function getLocationPathApiUrls() {
+    const locationPathApiUrls = getLocationPathApiUrlsOrNull();
+    if (locationPathApiUrls) {
+        return locationPathApiUrls;
+    }
+    throw new Error('should not happen!');
+}
+
+function getIsLocationDirectory$(locationUrl: string): Promise<boolean | null> {
     return new Promise((resolve, reject) => {
-        chrome.storage.sync.get('bitbucketBaseUrl', items => {
-            const pathFragmentsMatch = window.location.pathname.match(/(\/projects\/[^/]*\/repos\/[^/]*)(\/browse\/?.*)/);
-            if (!pathFragmentsMatch) {
-                resolve(null);
-                return;
+        compatFetch(
+            locationUrl + '?type=true',
+            {credentials: 'include'}).then(response => response.json()).then(value => {
+            if (value.type === 'DIRECTORY') {
+                resolve(true);
+            } else {
+                resolve(false);
             }
-
-            const apiTarget = {
-                bitbucketApiUrl: items.bitbucketBaseUrl + '/rest/api/1.0',
-                repositoryFragment: pathFragmentsMatch[1],
-                locationFragment: pathFragmentsMatch[2],
-                repositoryPath: items.bitbucketBaseUrl + '/rest/api/1.0' + pathFragmentsMatch[1],
-                locationPath: items.bitbucketBaseUrl + '/rest/api/1.0' + pathFragmentsMatch[1] + pathFragmentsMatch[2]
-            }
-
-            compatFetch(apiTarget.locationPath + '?type=true', {credentials: 'include'}).then(response => response.json()).then(value => {
-                if (value.type === 'DIRECTORY') {
-                    resolve(apiTarget);
-                } else {
-                    resolve(null);
-                }
-            }).catch(reason => reject(Error('There was a network error when trying to get location type')));
-        });
+        }).catch(reason => reject(Error('There was a network error when trying to get location type')));
     });
 }
