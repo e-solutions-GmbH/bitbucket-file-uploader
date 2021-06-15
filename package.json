@@ -1,7 +1,6 @@
 {
   "name": "de.eso.tools.bfu",
   "version": "1.0.0",
-  "author": "Ferdinand Schneider <ferdinand.schneider@esolutions.de>",
   "scripts": {
     "build": "tsc && cp -r './manifest/.' './build' && cp -r './res/.' './build'"
   },
