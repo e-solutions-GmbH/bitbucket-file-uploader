@@ -2,12 +2,18 @@
   "name": "de.eso.tools.bfu",
   "version": "1.0.0",
   "scripts": {
-    "build": "rm -rf './dist' && mkdir dist && tsc && cp -r './build/.' './dist/chrome' && cp -r './manifest/chrome/.' './dist/chrome' && cp -r './res/.' './dist/chrome' && cp -r './build/.' './dist/ff' && cp -r './manifest/firefox/.' './dist/ff' && cp -r './res/.' './dist/ff'"
+    "buildParcel": "parcel build src/*.ts -d build",
+    "build": "npm run buildParcel && rm -rf './dist' && mkdir dist && cp -r './build/.' './dist/chrome' && cp -r './manifest/chrome/.' './dist/chrome' && cp -r './res/.' './dist/chrome' && cp -r './build/.' './dist/ff' && cp -r './manifest/firefox/.' './dist/ff' && cp -r './res/.' './dist/ff'"
   },
   "devDependencies": {
     "@types/chrome": "0.0.81",
+    "@types/ejs": "^2.6.3",
+    "parcel-bundler": "^1.12.3",
     "ts-node": "^8.0.3",
     "tslint": "^5.13.1",
     "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "ejs": "^2.6.1"
   }
 }
