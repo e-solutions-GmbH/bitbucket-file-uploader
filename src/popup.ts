@@ -7,9 +7,9 @@ chrome.storage.sync.get('color', function (data) {
 
 changeColor.onclick = function (element) {
     const color = (element.target as HTMLInputElement).value;
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    /* chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         chrome.tabs.executeScript(
             tabs[0].id,
             {file: 'content.js'});
-    });
+    }); */
 };
