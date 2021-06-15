@@ -1,6 +1,11 @@
 {
-  "name": "de.eso.tools.bfu",
-  "version": "1.0.0",
+  "name": "bitbucket-file-uploader",
+  "version": "1.0.0-M1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/e-solutions-gmbh/bitbucket-file-uploader.git"
+  },
   "scripts": {
     "buildParcel": "parcel build src/*.ts --no-minify -d build",
     "buildResources": "rm -rf './dist' && mkdir dist && cp -r './build/.' './dist/chrome' && cp -r './manifest/chrome/.' './dist/chrome' && cp -r './res/.' './dist/chrome' && cp -r './build/.' './dist/ff' && cp -r './manifest/firefox/.' './dist/ff' && cp -r './res/.' './dist/ff'",
