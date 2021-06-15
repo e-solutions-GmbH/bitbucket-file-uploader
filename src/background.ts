@@ -29,6 +29,8 @@ function registerContentScriptInjector() {
     });
 }
 
+// declarativeContent is not supported in Firefox extensions :(
+/*
 function declarePageChangedRules(bitbucketBaseUrl: URL) {
     console.log('#declarePageChangedRules: ' + bitbucketBaseUrl);
     chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
@@ -54,6 +56,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
         declarePageChangedRules(url);
     }
 });
+*/
 
 // on installation we set a default value for the bitbucket-base-url
 chrome.runtime.onInstalled.addListener(details => {

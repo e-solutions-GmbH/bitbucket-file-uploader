@@ -2,7 +2,7 @@
   "name": "de.eso.tools.bfu",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc && cp -r './manifest/.' './build' && cp -r './res/.' './build'"
+    "build": "rm -rf './dist' && mkdir dist && tsc && cp -r './build/.' './dist/chrome' && cp -r './manifest/chrome/.' './dist/chrome' && cp -r './res/.' './dist/chrome' && cp -r './build/.' './dist/ff' && cp -r './manifest/firefox/.' './dist/ff' && cp -r './res/.' './dist/ff'"
   },
   "devDependencies": {
     "@types/chrome": "0.0.81",
