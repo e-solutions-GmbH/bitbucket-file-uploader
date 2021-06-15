@@ -1,35 +1,4 @@
 console.log('background script start');
-
-function registerContentScriptInjector() {
-    console.log('#registerContentScriptInjector');
-
-    // can not use onComplete with event filters like suggested here https://developer.chrome.com/extensions/background_pages#filters
-    // because it must be registered synchronously in the background script but the bitbucket-base-url is only available
-    // asynchronously (because of sync storage api).
-    // Why does it have to be registered synchronously? The problem only occurs when the background script is loaded
-    // the first time after browser start (triggered by the declared rules for onPageChanged event whose listeners are
-    // saved across browser restart, see https://developer.chrome.com/extensions/events#addingrules) on a page
-    // where content script should be injected. In this case the "onComplete" event gets lost if the listener is not
-    // registered synchronously, because it would be registered AFTER that page was loaded. The second time the script
-    // is loaded after browser start that problem no longer exists because the onComplete listener would have been
-    // registered at the first load of the background script and therefor BEFORE the page was loaded.
-    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-        if (changeInfo.status === 'complete') {
-            chrome.storage.sync.get('bitbucketBaseUrl', items => {
-                console.log('\tstorage get: ' + JSON.stringify(items));
-                console.log('\ttab url: ' + tab.url);
-                if (items.bitbucketBaseUrl === undefined) {
-                    console.log('\tbitbucketBaseURL undefined');
-                } else if (tab.url && new URL(tab.url).hostname === new URL(items.bitbucketBaseUrl).hostname) {
-                    console.log('\tbitbucketBaseURL set, injecting script');
-                    chrome.tabs.insertCSS(tabId, {file: 'box.css'});
-                    chrome.tabs.executeScript(tabId, {file: 'content.js'});
-                }
-            });
-        }
-    });
-}
-
 // declarativeContent is not supported in Firefox extensions :(
 /*
 function declarePageChangedRules(bitbucketBaseUrl: URL) {
@@ -67,6 +36,18 @@ chrome.runtime.onInstalled.addListener(details => {
 });
 
 // register synchronously, see https://developer.chrome.com/extensions/background_pages#listeners
-registerContentScriptInjector();
+chrome.webNavigation.onCompleted.addListener((details) => {
+    chrome.storage.sync.get('bitbucketBaseUrl', items => {
+        console.log('\tstorage get: ' + JSON.stringify(items));
+        console.log('\ttab url: ' + details.url);
+        if (items.bitbucketBaseUrl === undefined) {
+            console.log('\tbitbucketBaseURL undefined');
+        } else if (details.url && new URL(details.url).hostname === new URL(items.bitbucketBaseUrl).hostname) {
+            console.log('\tbitbucketBaseURL set, injecting script');
+            chrome.tabs.insertCSS(details.tabId, {file: 'box.css'});
+            chrome.tabs.executeScript(details.tabId, {file: 'content.js'});
+        }
+    });
+});
 
 console.log('background script stop');

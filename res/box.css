@@ -25,13 +25,21 @@
     float: right;
     background-color: #ff6600;
     width: 280px;
-    height: 450px;
+    height: 280px;
     padding: 10px;
     -webkit-border-radius: 0 0 0 5px;
     border-radius: 0 0 0 5px;
     overflow: auto;
     -webkit-box-shadow: -2px 2px 10px 1px #333333;
     box-shadow: -2px 2px 10px 1px #333333;
+}
+
+#uploadzone {
+    height: 95%;
+    border-style: dotted;
+    border-color: dimgray;
+    border-width: medium;
+    color: dimgray;
 }
 
 .moveboxchanger {
