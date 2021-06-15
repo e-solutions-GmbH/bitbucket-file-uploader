@@ -15,14 +15,27 @@ chrome.storage.sync.get('bitbucketBaseUrl', items => {
 function injectUploadSlideOut() {
     const slideOutBox = <HTMLDivElement>(document.createElement('div'));
 
-    const template = `<div id="boxbutton",
-style="position: fixed;top: 200px;right: 0px;width: 30px; height: 25px; background-color: black">
-</div>`;
+    const template = `
+<div id="box">
+    <div id="boxcontent">
+        <div id="uploadzone">Drop file to upload here</div>
+        <span id="progress">Progress: 0%</span>
+    </div>
+    <div id="boxbutton"></div>
+</div>
+`;
 
     const html = ejs.render(template);
     slideOutBox.innerHTML = html;
     document.body.appendChild(slideOutBox);
-    document.getElementById('boxbutton').addEventListener('click', () => uploadFileToBitbucket());
+    const box = document.getElementById('box');
+    document.getElementById('boxbutton').addEventListener('click', () => {
+        if (!box.classList.contains('moveboxchanger')) {
+            box.classList.add('moveboxchanger');
+        } else {
+            box.classList.remove('moveboxchanger');
+        }
+    });
 }
 
 function createTargetUrl(): Promise<string> {
