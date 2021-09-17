@@ -4,7 +4,14 @@
 1. [Roadmap](#roadmap)
 
 # Introduction
-bitbucket-file-uploader is a Chrome & Firefox extension that adds file upload functionalities to bitbucket server web interface.
+bitbucket-file-uploader is a Chrome & Firefox extension that adds file upload function to bitbucket server web interface.
+
+It adds a slide-out to the repository's file browser where you can simply drag'n'drop files to be uploaded.
+It automatically creates a pull-request that adds the uploaded file to the current opened directory in the repository  (see screenshots below).
+
+![screenshot 1](bitbucket_file_uploader_screen1.png)
+
+![screenshot 2](bitbucket_file_uploader_screen2.png)
 
 The web interface shipped with bitbucket server by default lacks this very useful feature and apparently it is not planned to be included by Atlassian, see https://bitbucket.org/site/master/issues/12656/upload-images-or-binary-files-to-the-repo. 
 
