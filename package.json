@@ -7,7 +7,7 @@
     "url": "https://github.com/e-solutions-gmbh/bitbucket-file-uploader.git"
   },
   "scripts": {
-    "buildParcel": "parcel build src/*.ts --no-minify -d build",
+    "buildParcel": "parcel build src/*.ts --no-optimize --dist-dir build",
     "buildResources": "rm -rf './dist' && mkdir dist && cp -r './build/.' './dist/chrome' && cp -r './manifest/chrome/.' './dist/chrome' && cp -r './res/.' './dist/chrome' && cp -r './build/.' './dist/ff' && cp -r './manifest/firefox/.' './dist/ff' && cp -r './res/.' './dist/ff'",
     "build": "npm run buildParcel && npm run buildResources",
     "watchChrome": "npm run buildResources && parcel watch src/*.ts --no-hmr -d dist/chrome",
@@ -16,14 +16,16 @@
   "devDependencies": {
     "@types/chrome": "0.0.81",
     "@types/dropzone": "^5.0.6",
-    "@types/ejs": "^2.6.3",
-    "parcel-bundler": "^1.12.3",
+    "@types/ejs": "^3.1.5",
+    "parcel": "^2.0.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
     "ts-node": "^8.0.3",
     "tslint": "^5.13.1",
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "ejs": "^2.6.1",
-    "dropzone": "^5.5.1"
+    "dropzone": "^5.5.1",
+    "ejs": "^3.1.9"
   }
 }

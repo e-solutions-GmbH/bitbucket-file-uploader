@@ -58,7 +58,7 @@ function injectUploadSlideOut() {
         complete: function (file): void {
             this.removeFile(file);
         },
-        success(file, response): void {
+        success: function (file): void {
             createPullRequest(getLocationPathApiUrls().repositoryUrl, createBranchNameFromFileName(file.name), file.name);
         }
     });
