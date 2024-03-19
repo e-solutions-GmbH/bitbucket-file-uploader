@@ -3,7 +3,7 @@ const bitbucketUrl = (<HTMLInputElement>document.getElementById('bitbucketUrl'))
 
 chrome.storage.sync.get('bitbucketBaseUrl', items => {
     bitbucketUrl.value = items.bitbucketBaseUrl;
-})
+});
 
 update.onclick = () => {
     chrome.storage.sync.set({bitbucketBaseUrl: bitbucketUrl.value}, () => {

@@ -45,21 +45,26 @@ function injectUploadSlideOut() {
         url: '/',
         method: 'PUT',
         paramName: 'content',
-        params: {
-            sourceBranch: 'master'
-        },
         processing: function (file) {
             this.options.url = getLocationPathApiUrls().locationPathUrl + '/' + file.name;
         },
         sending: function (file, xhr, formData): void {
-            formData.append('branch', createBranchNameFromFileName(file.name));
             formData.append('message', 'added ' + file.name + ' to directory');
+
+            const branchName: string = getLocationPathApiUrls().branchName;
+            formData.append('branch', branchName || createBranchNameFromFileName(file.name));
+            if (!branchName) {
+                formData.append('sourceBranch', 'master');
+            }
         },
         complete: function (file): void {
             this.removeFile(file);
         },
         success: function (file): void {
-            createPullRequest(getLocationPathApiUrls().repositoryUrl, createBranchNameFromFileName(file.name), file.name);
+            const locationPathApiUrls = getLocationPathApiUrls();
+            if (!locationPathApiUrls.branchName) {
+                createPullRequest(locationPathApiUrls.repositoryUrl, createBranchNameFromFileName(file.name), file.name);
+            }
         }
     });
 }
@@ -68,8 +73,8 @@ function createBranchNameFromFileName(filename: string): string {
     return 'added_file_' + filename.replace(/[^a-z0-9]/gi, '_') + '_with_bitbucket_fileuploader_plugin';
 }
 
-function createPullRequest(respositoryUrl: string, branchName: string, fileName: string) {
-    compatFetch(respositoryUrl + '/pull-requests', {
+function createPullRequest(repositoryUrl: string, branchName: string, fileName: string) {
+    compatFetch(repositoryUrl + '/pull-requests', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -100,12 +105,16 @@ function getLocationPathApiUrlsOrNull(): any | null {
         return null;
     }
 
+    const gitReference = new URL(document.location.href).searchParams.get('at');
+    const branchName = gitReference?.replace('refs/heads/', '');
+
     return {
         bitbucketApiUrl: window.location.origin + '/rest/api/1.0',
         repositoryFragment: pathFragmentsMatch[1],
         locationFragment: pathFragmentsMatch[2],
         repositoryUrl: window.location.origin + '/rest/api/1.0' + pathFragmentsMatch[1],
-        locationPathUrl: window.location.origin + '/rest/api/1.0' + pathFragmentsMatch[1] + pathFragmentsMatch[2]
+        locationPathUrl: window.location.origin + '/rest/api/1.0' + pathFragmentsMatch[1] + pathFragmentsMatch[2],
+        branchName: branchName
     };
 }
 

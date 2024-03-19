@@ -28,7 +28,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 });
 */
 
-// on installation we set a default value for the bitbucket-base-url
+// on installation, we set a default value for the bitbucket-base-url
 chrome.runtime.onInstalled.addListener(details => {
     console.log('#runtime onInstalled: ' + JSON.stringify(details));
 
